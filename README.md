@@ -13,7 +13,12 @@ The metrics are reachable through the standard `/metrics` path at the
 configured IP address (`--bind`) and port (`--port`).
 
 The `--subnets` option accept a list of comma separated network
-specification. For example `--subnets 10.0.0.0/8,192.168.0.0/16,172.16.200.0/24`.
+specification. For example `--subnets
+10.0.0.0/8,192.168.0.0/16,172.16.200.0/24`.
+
+To exclude traffic from the reporting use the `--exclude` option. For
+example to exclude multicast on the local network, use `--exclude
+224.0.0.0/24`.
 
 ## Limitations
 
@@ -40,6 +45,7 @@ Options:
   -b, --bind <BIND>            Exporter listen address (use "0.0.0.0" or "::" to bind on every interfaces, but this is not recommended)
   -p, --port <PORT>            Exporter port
   -s, --subnets <SUBNETS>      Subnet(s) to consider as local
+  -e, --exclude <EXCLUDE>      Subnet(s) to ignore
   -m, --max <MAX>              Maximum number of IP to track [default: 1024]
   -h, --help                   Print help
 ```

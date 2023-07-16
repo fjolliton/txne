@@ -29,6 +29,10 @@ struct Args {
     #[arg(short, long)]
     subnets: String,
 
+    /// Subnet(s) to ignore
+    #[arg(short, long)]
+    exclude: Option<String>,
+
     /// Maximum number of IP to track
     #[arg(short, long, default_value_t = 1024)]
     max: usize,
@@ -115,6 +119,7 @@ struct ServerState {
 fn run(
     mut cap: Capture<Active>,
     is_local: impl Fn(u32) -> bool,
+    is_excluded: Option<impl Fn(u32) -> bool>,
     max_tracking: usize,
     out_stats: Arc<Mutex<Stats>>,
 ) {
@@ -137,6 +142,11 @@ fn run(
                     let ip_proto = ip[9];
                     let ip_source = u32::from_be_bytes(ip[12..16].try_into().unwrap());
                     let ip_dest = u32::from_be_bytes(ip[16..20].try_into().unwrap());
+                    if let Some(is_excluded) = &is_excluded {
+                        if is_excluded(ip_source) || is_excluded(ip_dest) {
+                            continue;
+                        }
+                    }
                     let from_local = is_local(ip_source);
                     let to_local = is_local(ip_dest);
                     if from_local != to_local {
@@ -280,12 +290,25 @@ fn parse_subnets(subnets: &str) -> Option<Vec<(u32, u32)>> {
 async fn main() {
     let args = Args::parse();
 
-    let subnets = parse_subnets(&args.subnets);
-    if subnets.is_none() {
+    let subnets = parse_subnets(&args.subnets).unwrap_or_else(|| {
         println!("Invalid subnets");
         std::process::exit(1);
-    }
-    let subnets = subnets.unwrap();
+    });
+    let is_local = move |ip: u32| subnets.iter().any(|(addr, mask)| ip & mask == *addr);
+
+    let excluded_subnets = args.exclude.map(|s| {
+        parse_subnets(&s).unwrap_or_else(|| {
+            println!("Invalid subnets");
+            std::process::exit(1);
+        })
+    });
+    let is_excluded = excluded_subnets.map(|excluded_subnets| {
+        move |ip: u32| {
+            excluded_subnets
+                .iter()
+                .any(|(addr, mask)| ip & mask == *addr)
+        }
+    });
 
     let device = pcap::Device::list()
         .expect("device lookup failed")
@@ -315,10 +338,9 @@ async fn main() {
         stats: stats.clone(),
     };
 
-    let is_local = move |ip: u32| subnets.iter().any(|(addr, mask)| ip & mask == *addr);
     let thread_stats = stats.clone();
     thread::spawn(move || {
-        run(cap, is_local, args.max, thread_stats);
+        run(cap, is_local, is_excluded, args.max, thread_stats);
     });
 
     let app = Router::new()
