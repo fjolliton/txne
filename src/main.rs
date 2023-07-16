@@ -1,5 +1,6 @@
 use std::{
     collections::HashMap,
+    fmt,
     net::{IpAddr, Ipv4Addr, SocketAddr},
     sync::{Arc, Mutex},
     thread,
@@ -48,13 +49,13 @@ enum Protocol {
     Other,
 }
 
-impl Protocol {
-    fn to_str(&self) -> &'static str {
+impl fmt::Display for Protocol {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Protocol::Icmp => "icmp",
-            Protocol::Tcp => "tcp",
-            Protocol::Udp => "udp",
-            Protocol::Other => "other",
+            Protocol::Icmp => write!(f, "icmp"),
+            Protocol::Tcp => write!(f, "tcp"),
+            Protocol::Udp => write!(f, "udp"),
+            Protocol::Other => write!(f, "other"),
         }
     }
 }
@@ -65,11 +66,11 @@ enum Direction {
     Outbound,
 }
 
-impl Direction {
-    fn to_str(&self) -> &'static str {
+impl fmt::Display for Direction {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Direction::Inbound => "inbound",
-            Direction::Outbound => "outbound",
+            Direction::Inbound => write!(f, "inbound"),
+            Direction::Outbound => write!(f, "outbound"),
         }
     }
 }
@@ -80,11 +81,11 @@ enum ValueType {
     Bytes,
 }
 
-impl ValueType {
-    fn to_str(&self) -> &'static str {
+impl fmt::Display for ValueType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            ValueType::Packets => "packets",
-            ValueType::Bytes => "bytes",
+            ValueType::Packets => write!(f, "packets"),
+            ValueType::Bytes => write!(f, "bytes"),
         }
     }
 }
@@ -186,7 +187,7 @@ async fn metrics(State(state): State<ServerState>) -> String {
     let stats = state.stats.lock().unwrap().clone();
 
     let mut ips = stats.keys().collect::<Vec<_>>();
-    ips.sort_by(|ip_a, ip_b| ip_a.cmp(ip_b));
+    ips.sort();
 
     let add_desc = |result: &mut String, direction: Direction, value_type: ValueType| {
         let dir_name = match direction {
@@ -197,8 +198,6 @@ async fn metrics(State(state): State<ServerState>) -> String {
             ValueType::Packets => "Packets",
             ValueType::Bytes => "Bytes",
         };
-        let direction = direction.to_str();
-        let value_type = value_type.to_str();
         result.push_str(&format!(
             "# HELP {direction}_{value_type}_total {type_name} {dir_name} the network\n",
         ));
@@ -236,9 +235,6 @@ async fn metrics(State(state): State<ServerState>) -> String {
             Direction::Inbound => "ip_dest",
             Direction::Outbound => "ip_source",
         };
-        let direction = direction.to_str();
-        let value_type = value_type.to_str();
-        let protocol = protocol.to_str();
         let ip = ip.map(|ip| {
             let ip = ip.to_be_bytes();
             format!("{}.{}.{}.{}", ip[0], ip[1], ip[2], ip[3])
@@ -263,7 +259,7 @@ async fn metrics(State(state): State<ServerState>) -> String {
                     add_metric(&mut result, &stats, direction, value_type, **ip, protocol);
                 }
             }
-            result.push_str("\n");
+            result.push('\n');
         }
     }
     result
@@ -272,11 +268,11 @@ async fn metrics(State(state): State<ServerState>) -> String {
 /// Parse a comma separated list of IPv4 subnets
 fn parse_subnets(subnets: &str) -> Option<Vec<(u32, u32)>> {
     let mut result = Vec::new();
-    for part in subnets.split(",") {
-        let (address, size) = part.split_once("/").unwrap_or((part, "32"));
+    for part in subnets.split(',') {
+        let (address, size) = part.split_once('/').unwrap_or((part, "32"));
         let address: Ipv4Addr = address.parse().ok()?;
         let address = u32::from_be_bytes(address.octets());
-        let size = u8::from_str_radix(size, 10).ok()?;
+        let size = size.parse::<u8>().ok()?;
         if size > 32 {
             return None;
         }
