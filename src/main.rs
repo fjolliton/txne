@@ -167,7 +167,7 @@ fn run(
                             17 => &mut entry.udp,
                             _ => &mut entry.other,
                         };
-                        let mut item = if from_local {
+                        let item = if from_local {
                             &mut item.outbound
                         } else {
                             &mut item.inbound
