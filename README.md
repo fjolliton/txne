@@ -56,47 +56,47 @@ When querying the exporter with HTTP, you will get the Prometheus
 metrics that looks like this:
 
 ```
-# HELP inbound_packets_total Packets entering the network
-# TYPE inbound_packets_total counter
-inbound_packets_total{ip_version="4",ip_dest="192.168.0.100",protocol="icmp"} 51
-inbound_packets_total{ip_version="4",ip_dest="192.168.0.100",protocol="tcp"} 1597
-inbound_packets_total{ip_version="4",ip_dest="192.168.0.100",protocol="udp"} 155
-inbound_packets_total{ip_version="4",ip_dest="192.168.0.100",protocol="other"} 0
-inbound_packets_total{ip_version="4",ip_dest="192.168.0.215",protocol="icmp"} 0
-inbound_packets_total{ip_version="4",ip_dest="192.168.0.215",protocol="tcp"} 0
-inbound_packets_total{ip_version="4",ip_dest="192.168.0.215",protocol="udp"} 0
-inbound_packets_total{ip_version="4",ip_dest="192.168.0.215",protocol="other"} 0
+# HELP txne_inbound_packets_total Packets entering the network
+# TYPE txne_inbound_packets_total counter
+txne_inbound_packets_total{ip_version="4",ip_dest="192.168.0.100",protocol="icmp"} 51
+txne_inbound_packets_total{ip_version="4",ip_dest="192.168.0.100",protocol="tcp"} 1597
+txne_inbound_packets_total{ip_version="4",ip_dest="192.168.0.100",protocol="udp"} 155
+txne_inbound_packets_total{ip_version="4",ip_dest="192.168.0.100",protocol="other"} 0
+txne_inbound_packets_total{ip_version="4",ip_dest="192.168.0.215",protocol="icmp"} 0
+txne_inbound_packets_total{ip_version="4",ip_dest="192.168.0.215",protocol="tcp"} 0
+txne_inbound_packets_total{ip_version="4",ip_dest="192.168.0.215",protocol="udp"} 0
+txne_inbound_packets_total{ip_version="4",ip_dest="192.168.0.215",protocol="other"} 0
 
-# HELP inbound_bytes_total Bytes entering the network
-# TYPE inbound_bytes_total counter
-inbound_bytes_total{ip_version="4",ip_dest="192.168.0.100",protocol="icmp"} 4998
-inbound_bytes_total{ip_version="4",ip_dest="192.168.0.100",protocol="tcp"} 854269
-inbound_bytes_total{ip_version="4",ip_dest="192.168.0.100",protocol="udp"} 28922
-inbound_bytes_total{ip_version="4",ip_dest="192.168.0.100",protocol="other"} 0
-inbound_bytes_total{ip_version="4",ip_dest="192.168.0.215",protocol="icmp"} 0
-inbound_bytes_total{ip_version="4",ip_dest="192.168.0.215",protocol="tcp"} 0
-inbound_bytes_total{ip_version="4",ip_dest="192.168.0.215",protocol="udp"} 0
-inbound_bytes_total{ip_version="4",ip_dest="192.168.0.215",protocol="other"} 0
+# HELP txne_inbound_bytes_total Bytes entering the network
+# TYPE txne_inbound_bytes_total counter
+txne_inbound_bytes_total{ip_version="4",ip_dest="192.168.0.100",protocol="icmp"} 4998
+txne_inbound_bytes_total{ip_version="4",ip_dest="192.168.0.100",protocol="tcp"} 854269
+txne_inbound_bytes_total{ip_version="4",ip_dest="192.168.0.100",protocol="udp"} 28922
+txne_inbound_bytes_total{ip_version="4",ip_dest="192.168.0.100",protocol="other"} 0
+txne_inbound_bytes_total{ip_version="4",ip_dest="192.168.0.215",protocol="icmp"} 0
+txne_inbound_bytes_total{ip_version="4",ip_dest="192.168.0.215",protocol="tcp"} 0
+txne_inbound_bytes_total{ip_version="4",ip_dest="192.168.0.215",protocol="udp"} 0
+txne_inbound_bytes_total{ip_version="4",ip_dest="192.168.0.215",protocol="other"} 0
 
-# HELP outbound_packets_total Packets leaving the network
-# TYPE outbound_packets_total counter
-outbound_packets_total{ip_version="4",ip_source="192.168.0.100",protocol="icmp"} 51
-outbound_packets_total{ip_version="4",ip_source="192.168.0.100",protocol="tcp"} 1531
-outbound_packets_total{ip_version="4",ip_source="192.168.0.100",protocol="udp"} 155
-outbound_packets_total{ip_version="4",ip_source="192.168.0.100",protocol="other"} 0
-outbound_packets_total{ip_version="4",ip_source="192.168.0.215",protocol="icmp"} 0
-outbound_packets_total{ip_version="4",ip_source="192.168.0.215",protocol="tcp"} 0
-outbound_packets_total{ip_version="4",ip_source="192.168.0.215",protocol="udp"} 1
-outbound_packets_total{ip_version="4",ip_source="192.168.0.215",protocol="other"} 0
+# HELP txne_outbound_packets_total Packets leaving the network
+# TYPE txne_outbound_packets_total counter
+txne_outbound_packets_total{ip_version="4",ip_source="192.168.0.100",protocol="icmp"} 51
+txne_outbound_packets_total{ip_version="4",ip_source="192.168.0.100",protocol="tcp"} 1531
+txne_outbound_packets_total{ip_version="4",ip_source="192.168.0.100",protocol="udp"} 155
+txne_outbound_packets_total{ip_version="4",ip_source="192.168.0.100",protocol="other"} 0
+txne_outbound_packets_total{ip_version="4",ip_source="192.168.0.215",protocol="icmp"} 0
+txne_outbound_packets_total{ip_version="4",ip_source="192.168.0.215",protocol="tcp"} 0
+txne_outbound_packets_total{ip_version="4",ip_source="192.168.0.215",protocol="udp"} 1
+txne_outbound_packets_total{ip_version="4",ip_source="192.168.0.215",protocol="other"} 0
 
-# HELP outbound_bytes_total Bytes leaving the network
-# TYPE outbound_bytes_total counter
-outbound_bytes_total{ip_version="4",ip_source="192.168.0.100",protocol="icmp"} 4998
-outbound_bytes_total{ip_version="4",ip_source="192.168.0.100",protocol="tcp"} 479360
-outbound_bytes_total{ip_version="4",ip_source="192.168.0.100",protocol="udp"} 16964
-outbound_bytes_total{ip_version="4",ip_source="192.168.0.100",protocol="other"} 0
-outbound_bytes_total{ip_version="4",ip_source="192.168.0.215",protocol="icmp"} 0
-outbound_bytes_total{ip_version="4",ip_source="192.168.0.215",protocol="tcp"} 0
-outbound_bytes_total{ip_version="4",ip_source="192.168.0.215",protocol="udp"} 132
-outbound_bytes_total{ip_version="4",ip_source="192.168.0.215",protocol="other"} 0
+# HELP txne_outbound_bytes_total Bytes leaving the network
+# TYPE txne_outbound_bytes_total counter
+txne_outbound_bytes_total{ip_version="4",ip_source="192.168.0.100",protocol="icmp"} 4998
+txne_outbound_bytes_total{ip_version="4",ip_source="192.168.0.100",protocol="tcp"} 479360
+txne_outbound_bytes_total{ip_version="4",ip_source="192.168.0.100",protocol="udp"} 16964
+txne_outbound_bytes_total{ip_version="4",ip_source="192.168.0.100",protocol="other"} 0
+txne_outbound_bytes_total{ip_version="4",ip_source="192.168.0.215",protocol="icmp"} 0
+txne_outbound_bytes_total{ip_version="4",ip_source="192.168.0.215",protocol="tcp"} 0
+txne_outbound_bytes_total{ip_version="4",ip_source="192.168.0.215",protocol="udp"} 132
+txne_outbound_bytes_total{ip_version="4",ip_source="192.168.0.215",protocol="other"} 0
 ```
