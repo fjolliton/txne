@@ -198,10 +198,11 @@ async fn metrics(State(state): State<ServerState>) -> String {
             ValueType::Packets => "Packets",
             ValueType::Bytes => "Bytes",
         };
+        let series_name = format!("txne_{direction}_{value_type}_total");
         result.push_str(&format!(
-            "# HELP {direction}_{value_type}_total {type_name} {dir_name} the network\n",
+            "# HELP {series_name} {type_name} {dir_name} the network\n",
         ));
-        result.push_str(&format!("# TYPE {direction}_{value_type}_total counter\n",));
+        result.push_str(&format!("# TYPE {series_name} counter\n",));
     };
 
     let add_metric = |result: &mut String,
@@ -240,8 +241,9 @@ async fn metrics(State(state): State<ServerState>) -> String {
             format!("{}.{}.{}.{}", ip[0], ip[1], ip[2], ip[3])
         });
         let ip = ip.as_deref().unwrap_or("other");
+        let series_name = format!("txne_{direction}_{value_type}_total");
         result.push_str(&format!(
-            "{direction}_{value_type}_total{{ip_version=\"4\",{field}=\"{ip}\",protocol=\"{protocol}\"}} {counter}\n",
+            "{series_name}{{ip_version=\"4\",{field}=\"{ip}\",protocol=\"{protocol}\"}} {counter}\n",
         ));
     };
 
